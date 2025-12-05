@@ -11,6 +11,7 @@ Jasper, el motor JSP (JavaServer Pages) de Apache Tomcat, que compila las págin
 Apache Tomcat incluye varias aplicaciones web internas diseñadas para facilitar la administración del servidor y de las aplicaciones que se ejecutan sobre él. Entre estas herramientas destacan Manager y Host Manager, dos aplicaciones que, aunque suelen mencionarse juntas, cumplen funciones muy diferentes dentro del ecosistema de Tomcat. A continuación se explica de manera más detallada cuál es el propósito de cada una, cómo se accede a ellas y cuál es su relación con la configuración del servidor.  
 Aunque ambas herramientas comparten la idea de ofrecer una administración centralizada del servidor, su ámbito de acción es distinto. El Manager está orientado a la administración de aplicaciones web ya desplegadas o por desplegar, mientras que el Host Manager se ocupa de la estructura de los hosts virtuales donde esas aplicaciones podrían residir.
 ### Estructura básica de directorios (bin, conf, webapps, lib, logs)  
+La estructura básica de directorios de Tomcat se organiza en carpetas clave.  
 - bin: Contiene los scripts ejecutables para iniciar (startup.sh/.bat), detener (shutdown.sh/.bat) y administrar Tomcat.  
  - conf: Guarda los archivos de configuración principales en formato XML, especialmente server.xml (configuración global) y web.xml (configuración por defecto para todas las aplicaciones).  
 - lib: Aquí van las librerías (archivos JAR) que Tomcat y todas las aplicaciones web pueden usar.  
