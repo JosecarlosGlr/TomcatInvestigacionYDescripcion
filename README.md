@@ -17,4 +17,6 @@ La estructura básica de directorios de Tomcat se organiza en carpetas clave.
 - lib: Aquí van las librerías (archivos JAR) que Tomcat y todas las aplicaciones web pueden usar.  
 - logs: Almacena los archivos de registro (logs) generados por Tomcat.  
 - webapps: Es el corazón del despliegue; aquí se colocan las aplicaciones web. Por defecto incluye ROOT, docs, examples, etc  
-* ### Flujo interno de funcionamiento: recepción de peticiones, contenedores, despliegue de aplicaciones.  
+### Flujo interno de funcionamiento: recepción de peticiones, contenedores, despliegue de aplicaciones.  
+El flujo de Apache Tomcat implica que:
+Coyote (conector HTTP) recibe la petición del cliente, la pasa al contenedor principal (Catalina), que la enruta a los contenedores de Servlets (Contextos), donde se procesa la aplicación web (desplegada como archivos WAR en webapps) usando servlets y JSPs, gestionando el ciclo de vida de la aplicación y devolviendo la respuesta vía Coyote al cliente, siendo un proceso clave para desplegar aplicaciones Java
