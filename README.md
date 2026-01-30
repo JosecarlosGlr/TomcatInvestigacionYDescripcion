@@ -1,22 +1,34 @@
-# Tomcat: Investigación y descripción
+# Tomcat investigación y descripción
 
-### Catalina  
-Catalina es el nombre del contenedor de servlets de Apache Tomcat. Catalina implementa las especificaciones de Java para Servlets y JavaServer Pages (JSP), gestionando el ciclo de vida de los componentes Java en las aplicaciones web.
-En resumen es corazón de Tomcat; el contenedor que procesa los servlets y JSP.
-### Coyote  
-Coyote es el conector HTTP principal de Apache Tomcat, permitiendo que Tomcat actúe como un servidor web para manejar peticiones HTTP/1.1 y 2, procesar solicitudes de Java y servir archivos estáticos, conectando así el mundo HTTP con el contenedor de servlets Catalina. En resumen, Coyote es el componente que escucha en un puerto TCP, recibe la petición del cliente (navegador) y la pasa al motor de Tomcat (Catalina) para su procesamiento, y luego devuelve la respuesta.
-### Jasper
-Jasper, el motor JSP (JavaServer Pages) de Apache Tomcat, que compila las páginas JSP a código Java (servlets) para que Tomcat pueda procesarlas y entregarlas a los usuarios, permitiendo que los cambios en las páginas JSP se detecten y recompilen dinámicamente en tiempo de ejecución. Es decir, es un componente clave para ejecutar aplicaciones web dinámicas basadas en Java en Tomcat.
-### Manager y Host Manager  
-Apache Tomcat incluye varias aplicaciones web internas diseñadas para facilitar la administración del servidor y de las aplicaciones que se ejecutan sobre él. Entre estas herramientas destacan Manager y Host Manager, dos aplicaciones que, aunque suelen mencionarse juntas, cumplen funciones muy diferentes dentro del ecosistema de Tomcat. A continuación se explica de manera más detallada cuál es el propósito de cada una, cómo se accede a ellas y cuál es su relación con la configuración del servidor.  
-Aunque ambas herramientas comparten la idea de ofrecer una administración centralizada del servidor, su ámbito de acción es distinto. El Manager está orientado a la administración de aplicaciones web ya desplegadas o por desplegar, mientras que el Host Manager se ocupa de la estructura de los hosts virtuales donde esas aplicaciones podrían residir.
-### Estructura básica de directorios (bin, conf, webapps, lib, logs)  
-La estructura básica de directorios de Tomcat se organiza en carpetas clave.  
-- bin: Contiene los scripts ejecutables para iniciar (startup.sh/.bat), detener (shutdown.sh/.bat) y administrar Tomcat.  
- - conf: Guarda los archivos de configuración principales en formato XML, especialmente server.xml (configuración global) y web.xml (configuración por defecto para todas las aplicaciones).  
-- lib: Aquí van las librerías (archivos JAR) que Tomcat y todas las aplicaciones web pueden usar.  
-- logs: Almacena los archivos de registro (logs) generados por Tomcat.  
-- webapps: Es el corazón del despliegue; aquí se colocan las aplicaciones web. Por defecto incluye ROOT, docs, examples, etc  
-### Flujo interno de funcionamiento: recepción de peticiones, contenedores, despliegue de aplicaciones.  
-El flujo de Apache Tomcat implica que:
-Coyote (conector HTTP) recibe la petición del cliente, la pasa al contenedor principal (Catalina), que la enruta a los contenedores de Servlets (Contextos), donde se procesa la aplicación web (desplegada como archivos WAR en webapps) usando servlets y JSPs, gestionando el ciclo de vida de la aplicación y devolviendo la respuesta vía Coyote al cliente, siendo un proceso clave para desplegar aplicaciones Java
+### 🧩 Componentes del Núcleo
+
+* **Catalina (El Corazón):** Es el **Contenedor de Servlets** propiamente dicho. Implementa las especificaciones de Java Servlet y JSP. Es el motor que "piensa", gestiona las sesiones y el ciclo de vida de las aplicaciones web.
+* **Coyote (El Oído):** Es el **Conector HTTP**. Su función es escuchar las peticiones entrantes en un puerto TCP (generalmente el 8080), recibir la solicitud del navegador y pasársela a Catalina para su procesamiento. Actúa de puente entre la red y el motor de Java.
+* **Jasper (El Traductor):** Es el motor de **JSP (JavaServer Pages)**. Se encarga de analizar los archivos `.jsp`, traducirlos a código Java y compilarlos en Servlets (`.class`) para que puedan ser ejecutados.
+    > **Nota técnica:** Jasper almacena los archivos compilados en la carpeta `/work`. Si se borra esta carpeta, Tomcat la regenerará automáticamente al recibir nuevas peticiones.
+
+### 🛠️ Herramientas de Gestión
+* **Manager App:** Es la interfaz web para administrar las **aplicaciones** (archivos WAR). Permite desplegar, iniciar, detener y recargar aplicaciones individuales sin necesidad de reiniciar el servidor completo.
+* **Host Manager:** Es la interfaz para gestionar **Hosts Virtuales**. Permite configurar múltiples dominios (ej. `web1.com`, `web2.com`) servidos por una única instancia de Tomcat.
+
+---
+
+### Estructura basica de directorios
+
+| Directorio | Descripción |
+| :--- | :--- |
+| `/bin` | Contiene los scripts ejecutables para el arranque (`startup.sh`) y parada (`shutdown.sh`) del servidor. |
+| `/conf` | Almacena los archivos de configuración XML, incluyendo `server.xml` (puertos y conectores) y `tomcat-users.xml` (seguridad). |
+| `/lib` | Contiene las librerías Java (`.jar`) compartidas que son accesibles por todas las aplicaciones desplegadas. |
+| `/logs` | Directorio de registros. El archivo más importante es `catalina.out`, donde se vuelcan los errores y la salida estándar. |
+| `/webapps` | **Directorio de despliegue automático**. Cualquier archivo `.war` o carpeta colocada aquí será detectada y ejecutada por Tomcat. |
+
+---
+
+## Flujo Interno de Funcionamiento
+
+1.  **Recepción:** El cliente envía una petición. **Coyote** la recibe a través del puerto configurado (8080).
+2.  **Procesamiento:** Coyote pasa la solicitud al motor **Catalina**.
+3.  **Enrutado:** Catalina identifica el `Host` virtual y el `Context` (la aplicación específica) al que va dirigida la petición.
+4.  **Ejecución:** Se invoca al Servlet correspondiente. Si es un JSP, **Jasper** lo compila primero.
+5.  **Respuesta:** El resultado se envía de vuelta a Coyote, que lo entrega al cliente final.
